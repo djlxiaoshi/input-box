@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    #input-box{
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-box"></div>
+  <script src="../bin/inputbox.js"></script>
+  <script>
+    var dom = document.getElementById('input-box');
+    inputBox('.input-box', {length: 5, type: 'password'}, function (value) {
+      console.log(value);
+    });
+  </script>
+</body>
+</html>

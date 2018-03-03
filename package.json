@@ -1,0 +1,11 @@
+{
+  "name": "input-box",
+  "version": "1.0.1",
+  "description": "这是一个手机6位数输入器",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "djlxs",
+  "license": "ISC"
+}
