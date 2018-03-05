@@ -10,11 +10,11 @@
   </style>
 </head>
 <body>
-  <div class="input-box"></div>
+  <div id="input-box"></div>
   <script src="../bin/inputbox.js"></script>
   <script>
     var dom = document.getElementById('input-box');
-    inputBox('.input-box', {length: 5, type: 'password'}, function (value) {
+    inputBox('#input-box', {length: 6, type: 'password', styles: {radius: '5px'}}, function (value) {
       console.log(value);
     });
   </script>

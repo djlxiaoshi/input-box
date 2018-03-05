@@ -18,7 +18,9 @@
   var _defaultCofig = {
     length: 6,
     type: 'passwoed',
-    width: 100
+    styles: {
+      radius: 0
+    }
   };
   
   // 宿主元素
@@ -27,24 +29,25 @@
   var _finalConfig;
   
   function getConfig(defaultCofig, customConfig) {
-    return Object.assign({}, defaultCofig, customConfig);
+    return extend(true, defaultCofig, customConfig);
   }
   
   function InputBox(el, config, callback) {
     // 避免污染默认配置
     _finalConfig = getConfig(_defaultCofig, config);
-    var el = _hostEle = getHostEle(el);
-    var wrap = createWrap();
-    var input = createHiddenInputEle();
-    var ul = createInputEle();
+    
+    var el = _hostEle = getHostEle(el),
+      wrap = createWrap(),
+      input = createHiddenInputEle(),
+      ul = createInputEle();
     
     wrap.appendChild(input);
     wrap.appendChild(ul);
     el.appendChild(wrap);
     
     input.addEventListener('input', function (e) {
-      var value = e.target.value;
-      var len = value.length;
+      var value = e.target.value,
+        len = value.length;
       for (var i = 0; i < _finalConfig.length; i++) {
         if (i <= len) {
           ul.children[i].value = e.target.value.slice(i, i + 1);
@@ -60,13 +63,7 @@
     
     ul.addEventListener('click', function () {
       input.focus();
-    })
-  }
-  
-  function isDom(obj) {
-    return typeof HTMLElement === 'object'?
-       obj instanceof HTMLElement :
-       obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    });
   }
   
   function getHostEle(el) {
@@ -77,9 +74,9 @@
   }
   
   function createWrap() {
-    var wrap = document.createElement('div');
-    var height = Math.floor(_hostEle.clientWidth / _finalConfig.length) + 'px';
-    var wrapStyle = wrap.style;
+    var wrap = document.createElement('div'),
+      height = Math.floor(_hostEle.clientWidth / _finalConfig.length) + 'px',
+      wrapStyle = wrap.style;
     wrapStyle.position = 'relative';
     wrapStyle.width = '100%';
     wrapStyle.height = height;
@@ -87,8 +84,8 @@
   }
   
   function createHiddenInputEle() {
-    var inputEle = document.createElement('input');
-    var styles = inputEle.style;
+    var inputEle = document.createElement('input'),
+      styles = inputEle.style;
     
     inputEle.type = _finalConfig.type;
     inputEle.maxLength = _finalConfig.length;
@@ -105,17 +102,19 @@
   
   function createInputEle() {
     
-    var allWidth = _hostEle.clientWidth || _finalConfig.width;
-    var height = Math.floor(allWidth / _finalConfig.length) + 'px';
-    var width = Math.floor(allWidth / _finalConfig.length) + 'px';
-    var div = document.createElement('div');
+    var allWidth = _hostEle.clientWidth || _finalConfig.width,
+      height = Math.floor(allWidth / _finalConfig.length) + 'px',
+      width = Math.floor(allWidth / _finalConfig.length) + 'px',
+      div = document.createElement('div'),
+      len = _finalConfig.length,
+      radiusValue = _finalConfig.styles['radius'];
     
     div.style.display = 'flex';
     div.style.position = 'absolute';
     div.style.top = 0;
     div.style.left = 0;
     
-    for (var i = 0; i < _finalConfig.length; i++) {
+    for (var i = 0; i < len; i++) {
       var input = document.createElement('input');
       var inputStyle = input.style;
       
@@ -127,12 +126,73 @@
       inputStyle.borderLeft = 'none';
       inputStyle.textAlign = 'center';
       inputStyle.outline = 'none';
+      
       input.readOnly = true;
-      if (i === 0) inputStyle.borderLeft = '1px solid #e5e5e5';
+      if (i === 0) {
+        inputStyle.borderLeft = '1px solid #e5e5e5';
+        inputStyle.borderTopLeftRadius = radiusValue;
+        inputStyle.borderBottomLeftRadius = radiusValue;
+      }
+      if (i === len - 1) {
+        inputStyle.borderTopRightRadius = radiusValue;
+        inputStyle.borderBottomRightRadius = radiusValue;
+      }
       div.appendChild(input);
     }
     
     return div;
+  }
+  
+  function valueHandler(value) {
+    var result;
+    if (result = /\%$/.test(value)) {
+      return value;
+    } else if (result = /(px)$/.exec(value)) {
+      return value.slice(0, result.index);
+    } else if (value === +value) {
+      return value;
+    }
+  }
+  
+  function isObject(obj) {
+    return typeof obj === 'object' && obj !== null;
+  }
+  
+  function isDom(obj) {
+    return typeof HTMLElement === 'object'?
+      obj instanceof HTMLElement :
+      obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+  }
+  
+  function extend() {
+    var target = arguments[0] || {},
+        deep = false,
+        length = arguments.length,
+        i = 1,
+        options;
+    if (typeof arguments[0] === 'boolean') {
+      deep = arguments[0];
+      target = arguments[1] || {};
+      i = 2;
+    }
+    
+    for (; i < length; i++) {
+      options = arguments[i];
+      if (deep) {
+        for (var key in options) {
+          if (isObject(options[key])) {
+            target[key] = target[key] || {};
+            extend(deep, target[key], options[key]);
+          } else {
+            target[key] = options[key];
+          }
+        }
+      } else {
+        Object.assign(target, options);
+      }
+    }
+  
+    return target;
   }
 })(this);
 

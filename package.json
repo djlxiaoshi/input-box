@@ -1,11 +1,12 @@
 {
   "name": "input-box",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "这是一个手机6位数密码输入器",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": ["password", "input"],
   "git": "git@github.com:djlxiaoshi/input-box.git",
   "author": "djlxs",
   "license": "ISC"
