@@ -14,8 +14,16 @@
   <script src="../bin/inputbox.js"></script>
   <script>
     var dom = document.getElementById('input-box');
-    inputBox('#input-box', {length: 6, type: 'password', styles: {radius: '5px'}}, function (value) {
-      console.log(value);
+    inputBox('#input-box', {
+      length: 6,
+      type: 'password',
+      styles: {radius: '5px'},
+      onChange: function (value) {
+        console.log(value)
+      },
+      onCompleted: function (value) {
+        console.log('完成了', value);
+      }
     });
   </script>
 </body>

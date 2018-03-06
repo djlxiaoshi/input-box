@@ -32,12 +32,17 @@
     return extend(true, defaultCofig, customConfig);
   }
   
-  function InputBox(el, config, callback) {
+  function InputBox(el, config) {
     // 避免污染默认配置
     _finalConfig = getConfig(_defaultCofig, config);
     
-    var el = _hostEle = getHostEle(el),
-      wrap = createWrap(),
+    var el = _hostEle = getHostEle(el);
+    if (!el) {
+      console.error('宿主元素获取失败!');
+      return;
+    }
+  
+    var wrap = createWrap(),
       input = createHiddenInputEle(),
       ul = createInputEle();
     
@@ -56,8 +61,12 @@
         }
       }
       
-      if (len === _finalConfig.length) {
-        callback(value);
+      if (typeof _finalConfig['onChange'] === 'function') {
+        _finalConfig['onChange'](value);
+      }
+      
+      if (len === _finalConfig.length && typeof _finalConfig['onCompleted'] === 'function') {
+        _finalConfig['onCompleted'](value);
       }
     });
     
@@ -113,6 +122,8 @@
     div.style.position = 'absolute';
     div.style.top = 0;
     div.style.left = 0;
+    
+    if (len <= 0) console.warn('您配置的length值可能有误');
     
     for (var i = 0; i < len; i++) {
       var input = document.createElement('input');
